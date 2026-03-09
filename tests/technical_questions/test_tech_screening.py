@@ -1,7 +1,7 @@
 from unittest import TestCase
 import pandas as pd
 
-from technical_questions.tech_screening import BulkCrossRefLookup
+from src.technical_questions.tech_screening import BulkCrossRefLookup
 
 
 class TestBulkCrossRefLookup(TestCase):
@@ -147,4 +147,5 @@ class TestData:
                 "customerID": "9998880005",
                 "sourceSystemCode": "HCM"
             }
+
         ]

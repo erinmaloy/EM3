@@ -1,4 +1,4 @@
-from technical_questions.supporting_code.model_objects import (
+from src.technical_questions.supporting_code.model_objects import (
     AnnotatedStepFactory,
     DealerCustomerConsolidationRef,
     step
@@ -128,3 +128,4 @@ if __name__ == '__main__':
     pass
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
+

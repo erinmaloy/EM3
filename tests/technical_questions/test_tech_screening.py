@@ -1,7 +1,7 @@
 from unittest import TestCase
 import pandas as pd
 
-from src.technical_questions.tech_screening import BulkCrossRefLookup
+from src.technical_questions.tech_screening import BulkCrossRefLookup, map_std_mfr_cd
 
 
 class TestBulkCrossRefLookup(TestCase):
@@ -129,6 +129,22 @@ class TestBulkCrossRefLookup(TestCase):
         }
         self.assertEqual(third_row_expected_dict_at_index_one, result_series[2][1],
                          "The third row should contain a list with a nested dictionary")
+
+class TestStdMnrCd(TestCase):
+
+    def test_empty_dict(self):
+        self.assertEqual(map_std_mfr_cd({}), "NA")
+
+    def test_no_std_mnr_cd_key(self):
+        self.assertEqual(map_std_mfr_cd({"standard_manu_code":"ABCDE"}), "NA")
+
+    def test_std_mnr_cd_key_to_short(self):
+        self.assertEqual(map_std_mfr_cd({"standard_manu_code":"ABC"}), "NA")
+
+    def test_valid(self):
+        self.assertEqual(map_std_mfr_cd({"standard_manufacturer_code":"ABCDE"}), "ABCDE")
+
+
 
 
 class TestData:

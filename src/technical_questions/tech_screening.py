@@ -31,10 +31,12 @@ class BulkCrossRefLookup(AnnotatedStepFactory):
 
         # Validate if customerID & sourceSystemCode exists in source DataFrame
         # Type code below:
-
+        if "customerID" not in source.columns and "sourceSystemCode" not in source.columns:
+            raise RuntimeError("No customerID or sourceSystemCode column in source df")
         # Convert the source DataFrame to a list of dicts,
         # and assign it to a variable called helper_input_list
         # Type code below:
+        helper_input_list: list[dict] = source.to_dict("records")
 
         # The lookup method below returns an iterator
         # object which contains decision objects.
@@ -98,6 +100,15 @@ class BulkCrossRefLookup(AnnotatedStepFactory):
         # (see example in doc string above).
         # Decisions -> value_choice -> value
         # Type code below:
+        output = []
+        for d in decision_iterator:
+            vals = []
+            for vc in d.value_choices:
+                if vc.value is None:
+                    vals.append([])
+                else:
+                    vals.append(vc.value)
+            output.append(vals)
 
         # Build a panda series that contains the return values for these lookups.
         # Each row of the panda series should only contain the lookup results
@@ -108,6 +119,7 @@ class BulkCrossRefLookup(AnnotatedStepFactory):
         # the source DataFrame.
         # Return the pandas series
         # Type code below:
+        return pd.Series(output)
 
 
 # 2. Given the mapping function below map_std_mfr_cd with dictionary as an input parameter,
@@ -122,6 +134,23 @@ def map_std_mfr_cd(temp: dict):
 
 
 # Write out your unit tests below
+from unittest import TestCase
+
+class TestStdMnrCd(TestCase):
+
+    def test_empty_dict(self):
+        self.assertEqual(map_std_mfr_cd({}), "NA")
+
+    def test_no_std_mnr_cd_key(self):
+        self.assertEqual(map_std_mfr_cd({"standard_manu_code":"ABCDE"}), "NA")
+
+    def test_std_mnr_cd_key_to_short(self):
+        self.assertEqual(map_std_mfr_cd({"standard_manu_code":"ABC"}), "NA")
+
+    def test_valid(self):
+        self.assertEqual(map_std_mfr_cd({"standard_manufacturer_code":"ABCDE"}), "ABCDE")
+
+
 
 
 if __name__ == '__main__':
